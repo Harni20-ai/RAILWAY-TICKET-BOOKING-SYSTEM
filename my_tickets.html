@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tickets | Indian Railways</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --irctc-blue: #1a4e8a;
+            --irctc-red: #e31937;
+            --irctc-yellow: #ffc72c;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e2e9f5 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--dark);
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--irctc-blue);
+            font-weight: 700;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 4px;
+            background: var(--irctc-red);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .ticket-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .stat-card i {
+            color: var(--irctc-blue);
+            font-size: 1.2rem;
+        }
+        
+        .tickets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tickets-table thead tr {
+            background-color: var(--irctc-blue);
+            color: white;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .tickets-table th,
+        .tickets-table td {
+            padding: 15px 20px;
+            vertical-align: middle;
+        }
+        
+        .tickets-table tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+        
+        .tickets-table tbody tr:nth-of-type(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .tickets-table tbody tr:last-of-type {
+            border-bottom: 2px solid var(--irctc-blue);
+        }
+        
+        .tickets-table tbody tr:hover {
+            background-color: #f1f5fe;
+        }
+        
+        .train-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .train-name {
+            font-weight: 600;
+            color: var(--irctc-blue);
+            margin-bottom: 5px;
+        }
+        
+        .train-number {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        
+        .journey-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .route {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+        
+        .route i {
+            color: var(--irctc-blue);
+            font-size: 0.8em;
+        }
+        
+        .time {
+            font-weight: 500;
+        }
+        
+        .date {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        
+        .passenger-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .passenger-name {
+            font-weight: 500;
+        }
+        
+        .passenger-details {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+        
+        .ticket-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-cancel {
+            background: var(--irctc-red);
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: #c1121f;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(227, 25, 55, 0.3);
+        }
+        
+        .btn-download {
+            background: var(--irctc-blue);
+            color: white;
+            margin-top: 5px;
+        }
+        
+        .btn-download:hover {
+            background: #0d3a6e;
+            transform: translateY(-2px);
+        }
+        
+        .no-tickets {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        .no-tickets i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #adb5bd;
+        }
+        
+        .no-tickets h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 20px;
+            color: var(--irctc-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        
+        .back-link:hover {
+            background: #f1f5fe;
+            text-decoration: underline;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header i {
+            color: var(--irctc-red);
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .modal-header h2 {
+            color: var(--irctc-red);
+        }
+        
+        .modal-body {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn-confirm {
+            background: var(--irctc-red);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-confirm:hover {
+            background: #c1121f;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tickets-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .ticket-stats {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-ticket-alt"></i> My Bookings</h1>
+        
+        <div class="ticket-stats">
+            <div class="stat-card">
+                <i class="fas fa-ticket-alt"></i>
+                <span id="total-bookings">Loading...</span>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-rupee-sign"></i>
+                <span id="total-fare">Loading...</span>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="last-booking">Loading...</span>
+            </div>
+        </div>
+        
+        <div id="tickets-container">
+            <!-- Tickets will be loaded here by JavaScript -->
+        </div>
+        
+        <a href="dashboard.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Cancel Ticket Modal -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>Confirm Cancellation</h2>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel ticket <strong id="modal-pnr"></strong> for</p>
+                <p><strong id="modal-train-name"></strong>?</p>
+                <p style="margin-top: 15px; color: var(--irctc-red);">
+                    <i class="fas fa-info-circle"></i> Cancellation charges may apply as per IRCTC rules.
+                </p>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal()">
+                    <i class="fas fa-times"></i> No, Keep Ticket
+                </button>
+                <button class="btn-confirm" id="confirm-cancel">
+                    <i class="fas fa-check"></i> Yes, Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load tickets from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', async function() {
+    const username = sessionStorage.getItem('currentUser');
+    
+    try {
+        const response = await fetch(`http://localhost:3001/tickets/${username}`);
+        const tickets = await response.json();
+        
+        if (tickets.length === 0) {
+            // Show "no tickets" message
+        } else {
+            // Render tickets using the same format as before
+            tickets.forEach(ticket => {
+                // Your existing ticket display logic here
+            });
+        }
+    } catch (error) {
+        console.error('Error loading tickets:', error);
+    }
+});
+            const ticketsContainer = document.getElementById('tickets-container');
+            
+            if (tickets.length === 0) {
+                ticketsContainer.innerHTML = `
+                    <div class="no-tickets">
+                        <i class="fas fa-train"></i>
+                        <h3>No Tickets Booked Yet</h3>
+                        <p>You haven't booked any train tickets. Start your journey now!</p>
+                        <a href="book_ticket.html" class="action-btn btn-download" style="margin-top: 15px;">
+                            <i class="fas fa-search"></i> Book Tickets
+                        </a>
+                    </div>
+                `;
+                
+                document.getElementById('total-bookings').textContent = '0 bookings';
+                document.getElementById('total-fare').textContent = '₹0';
+                document.getElementById('last-booking').textContent = 'N/A';
+            } else {
+                // Update stats
+                const totalFare = tickets.reduce((sum, ticket) => sum + parseInt(ticket.fare || 0), 0);
+                const lastBookingDate = new Date(Math.max(...tickets.map(t => new Date(t.booking_date || new Date()))));
+                
+                document.getElementById('total-bookings').textContent = `${tickets.length} ${tickets.length === 1 ? 'booking' : 'bookings'}`;
+                document.getElementById('total-fare').textContent = `₹${totalFare}`;
+                document.getElementById('last-booking').textContent = lastBookingDate.toLocaleDateString();
+                
+                // Create table
+                let tableHTML = `
+                    <table class="tickets-table">
+                        <thead>
+                            <tr>
+                                <th>PNR Number</th>
+                                <th>Train Details</th>
+                                <th>Journey</th>
+                                <th>Passenger</th>
+                                <th>Fare & Class</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                tickets.forEach(ticket => {
+                    const journeyDate = new Date(ticket.journey_date || new Date());
+                    const bookingDate = new Date(ticket.booking_date || new Date());
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>#${ticket.pnr}</td>
+                            <td>
+                                <div class="train-info">
+                                    <span class="train-name">${getTrainName(ticket.train_name)}</span>
+                                    <span class="train-number">${ticket.train_name}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="journey-info">
+                                    <div class="route">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>${getStationName(ticket.from_station)} (${ticket.from_station}) → ${getStationName(ticket.to_station)} (${ticket.to_station})</span>
+                                    </div>
+                                    <div class="time">
+                                        ${ticket.departure_time || '--:--'} → ${ticket.arrival_time || '--:--'}
+                                    </div>
+                                    <div class="date">
+                                        ${journeyDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="passenger-info">
+                                    <span class="passenger-name">${ticket.passenger_title || ''} ${ticket.passenger_name}</span>
+                                    <span class="passenger-details">
+                                        ${ticket.passenger_age || '--'} yrs, ${ticket.passenger_gender || '--'}
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>₹${ticket.fare || '0'}</div>
+                                <div class="passenger-details">${getClassFullName(ticket.travel_class)}</div>
+                            </td>
+                            <td>
+                                <span class="ticket-status status-confirmed">
+                                    <i class="fas fa-check-circle"></i> ${ticket.status || 'Confirmed'}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="action-btn btn-cancel" onclick="showCancelModal('${ticket.pnr}', '${getTrainName(ticket.train_name)}')">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                                <button class="action-btn btn-download" onclick="downloadTicket('${ticket.pnr}')">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                
+                ticketsContainer.innerHTML = tableHTML;
+            }
+        });
+        
+        // Helper functions
+        function getTrainName(trainNumber) {
+            const trainMap = {
+                '12007': 'Chennai Central Shatabdi Express',
+                '12609': 'MGR Chennai Central SF Express',
+                '12658': 'KSR Bengaluru - Chennai Mail',
+                '12696': 'Chennai SF Express',
+                '12001': 'New Delhi - Bhopal Habibganj Shatabdi Express',
+                '22691': 'Bengaluru - Hazrat Nizamuddin Rajdhani Express'
+            };
+            return trainMap[trainNumber] || trainNumber;
+        }
+        
+        function getStationName(stationCode) {
+            const stationMap = {
+                'SBC': 'Bengaluru City Jn',
+                'MYS': 'Mysuru Jn',
+                'UBL': 'Hubballi Jn',
+                'BCT': 'Mumbai Central',
+                'PUNE': 'Pune Jn',
+                'NGP': 'Nagpur Jn',
+                'NDLS': 'New Delhi',
+                'LKO': 'Lucknow Charbagh NR',
+                'CNB': 'Kanpur Central',
+                'MAS': 'MGR Chennai Central',
+                'MDU': 'Madurai Jn',
+                'TPJ': 'Tiruchchirappalli Jn',
+                'HWH': 'Howrah Jn',
+                'SDAH': 'Sealdah',
+                'KGP': 'Kharagpur Jn'
+            };
+            return stationMap[stationCode] || stationCode;
+        }
+        
+        function getClassFullName(classCode) {
+            const classMap = {
+                'EC': 'Executive Chair Car',
+                'CC': 'AC Chair Car',
+                '1A': 'First Class AC',
+                '2A': 'AC Two-Tier',
+                '3A': 'AC Three-Tier',
+                'SL': 'Sleeper Class',
+                '2S': 'Second Sitting'
+            };
+            return classMap[classCode] || classCode;
+        }
+        
+        // Modal functions
+        let currentPnr = null;
+        
+        function showCancelModal(pnr, trainName) {
+            currentPnr = pnr;
+            document.getElementById('modal-pnr').textContent = '#' + pnr;
+            document.getElementById('modal-train-name').textContent = trainName;
+            document.getElementById('cancelModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('cancelModal').style.display = 'none';
+            currentPnr = null;
+        }
+        
+        document.getElementById('confirm-cancel').onclick = function() {
+            if (currentPnr) {
+                cancelTicket(currentPnr);
+            }
+        };
+        
+        function cancelTicket(pnr) {
+            const tickets = JSON.parse(localStorage.getItem('tickets')) || [];
+            const updatedTickets = tickets.map(ticket => {
+                if (ticket.pnr == pnr) {
+                    return {
+                        ...ticket,
+                        status: 'Cancelled',
+                        cancellation_date: new Date().toLocaleDateString()
+                    };
+                }
+                return ticket;
+            });
+            
+            localStorage.setItem('tickets', JSON.stringify(updatedTickets));
+            alert(`Ticket #${pnr} has been cancelled.`);
+            closeModal();
+            window.location.reload();
+        }
+        
+        function downloadTicket(pnr) {
+            alert(`Downloading ticket #${pnr}`);
+            // In a real app, this would generate a PDF or open a print dialog
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('cancelModal')) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>

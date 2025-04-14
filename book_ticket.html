@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Ticket | Indian Railways</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* PRESERVED ALL ORIGINAL STYLES */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .booking-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        select,
+        input[type="date"],
+        input[type="number"],
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        select option {
+            font-size: 1rem;
+            color: #333;
+            padding: 8px;
+        }
+
+        .btn-book {
+            background-color: #28a745;
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .btn-book:hover {
+            background-color: #218838;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 30px;
+            color: #007bff;
+            text-decoration: none;
+            text-align: center;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #0056b3;
+        }
+
+        .back-link i {
+            margin-right: 8px;
+        }
+
+        #fare-display {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="booking-container">
+        <h1><i class="fas fa-ticket-alt"></i> Book Your Train Ticket</h1>
+        
+        <div id="error-message" class="error-message"></div>
+        
+        <form id="bookingForm">
+            <div class="form-group">
+                <label for="from_station"><i class="fas fa-train-station"></i> From Station:</label>
+                <select id="from_station" name="from_station" required>
+                    <option value="">Select Station</option>
+                    <option value="Bengaluru City Jn">Bengaluru City Jn (SBC)</option>
+                    <option value="Hazrat Nizamuddin">Hazrat Nizamuddin (NZM)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="to_station"><i class="fas fa-train-station"></i> To Station:</label>
+                <select id="to_station" name="to_station" required>
+                    <option value="">Select Station</option>
+                    <option value="Hazrat Nizamuddin">Hazrat Nizamuddin (NZM)</option>
+                    <option value="Bengaluru City Jn">Bengaluru City Jn (SBC)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="train_name"><i class="fas fa-train"></i> Train:</label>
+                <select id="train_name" name="train_name" required onchange="updateFare()">
+                    <option value="">Select Train</option>
+                    <option value="22691">22691 - Bengaluru-NZM Rajdhani Express</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="travel_class"><i class="fas fa-couch"></i> Class:</label>
+                <select id="travel_class" name="travel_class" required onchange="updateFare()">
+                    <option value="">Select Class</option>
+                    <option value="1A">First AC (1A)</option>
+                    <option value="2A">AC 2-Tier (2A)</option>
+                    <option value="3A">AC 3-Tier (3A)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="journey_date"><i class="fas fa-calendar-alt"></i> Journey Date:</label>
+                <input type="date" id="journey_date" name="journey_date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="passenger_name"><i class="fas fa-user"></i> Passenger Name:</label>
+                <input type="text" id="passenger_name" name="passenger_name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="passenger_age"><i class="fas fa-birthday-cake"></i> Passenger Age:</label>
+                <input type="number" id="passenger_age" name="passenger_age" min="1" max="120" required>
+            </div>
+            
+            <div id="fare-display"></div>
+            
+            <button type="submit" class="btn-book"><i class="fas fa-check-circle"></i> Book Ticket</button>
+        </form>
+        
+        <a href="dashboard.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <script>
+        // Exact fare mapping that matches database
+        const fareChart = {
+            '22691': { 
+                '1A': 2500, 
+                '2A': 1500, 
+                '3A': 1100 
+            }
+        };
+
+        function updateFare() {
+            const train = document.getElementById('train_name').value;
+            const travelClass = document.getElementById('travel_class').value;
+            const fareDisplay = document.getElementById('fare-display');
+            
+            if (train && travelClass && fareChart[train] && fareChart[train][travelClass]) {
+                fareDisplay.textContent = `Fare: ₹${fareChart[train][travelClass]}`;
+            } else {
+                fareDisplay.textContent = '';
+            }
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const errorElement = document.getElementById('error-message');
+            errorElement.style.display = 'none';
+            
+            const formData = {
+                username: sessionStorage.getItem('currentUser'),
+                train_id: document.getElementById('train_name').value,
+                from_station: document.getElementById('from_station').value,
+                to_station: document.getElementById('to_station').value,
+                travel_class: document.getElementById('travel_class').value,
+                journey_date: document.getElementById('journey_date').value,
+                passenger_name: document.getElementById('passenger_name').value,
+                passenger_age: document.getElementById('passenger_age').value,
+                passenger_gender: document.getElementById('passenger_gender').value
+            };
+
+            // Validate fare exists before sending
+            if (!fareChart[formData.train_id]?.[formData.travel_class]) {
+                showError('Selected class is not available for this train');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3001/book', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`Ticket booked successfully! PNR: ${result.pnr_number}`);
+                    window.location.href = 'my_tickets.html';
+                } else {
+                    showError(result.message || 'Booking failed');
+                }
+            } catch (error) {
+                showError('Failed to connect to server. Please try again.');
+                console.error('Booking error:', error);
+            }
+        });
+
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        // Set minimum date to today
+        document.getElementById('journey_date').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
